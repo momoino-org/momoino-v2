@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "name": "C#: Console [Default Configuration]",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/Console/Console.csproj"
+        }
+    ]
+}
