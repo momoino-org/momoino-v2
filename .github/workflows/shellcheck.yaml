@@ -1,4 +1,4 @@
-name: shellcheck
+name: ShellCheck
 
 on:
   push:
@@ -15,7 +15,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint:
+  check:
+    name: Check
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
