@@ -29,5 +29,5 @@ EOSQL
 }
 
 drop_database "root"
-create_database "keycloak" "keycloak" "Keep!t5ecret"
-create_database "momoino" "momoino_console" "Keep!t5ecret"
+create_database "${KEYCLOAK_DB_NAME}" "${KEYCLOAK_DB_USERNAME}" "${KEYCLOAK_DB_PASSWORD}"
+create_database "${MOMOINO_DB_NAME}" "${MOMOINO_DB_USERNAME}" "${MOMOINO_DB_PASSWORD}"

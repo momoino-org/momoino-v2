@@ -6,7 +6,7 @@
   "clients": [
     {
       "clientId": "momoino-client",
-      "secret" : "LcgHqRLBuJKLZ5wGWlxoUmMz34A6dxQu",
+      "secret" : "${CLIENT_SECRET}",
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
