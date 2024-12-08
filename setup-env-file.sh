@@ -82,7 +82,7 @@ function generate_security_keys() {
 
 # Main execution flow
 function main() {
-    local CLIENT_SECRET DEFAULT_PASSWORD COOKIE_SECRET
+    declare -x CLIENT_SECRET DEFAULT_PASSWORD COOKIE_SECRET
 
     echo "=== Starting Environment Setup ==="
 
@@ -93,7 +93,7 @@ function main() {
     fi
 
     # Update environment configuration
-    if ! update_environment_file "$ENV_FILE" '$CLIENT_SECRET,$DEFAULT_PASSWORD,$COOKIE_SECRET'; then
+    if ! update_environment_file "$ENV_FILE" "\$CLIENT_SECRET,\$DEFAULT_PASSWORD,\$COOKIE_SECRET"; then
         exit 1
     fi
 
@@ -104,7 +104,7 @@ function main() {
     fi
 
     # Update Keycloak realm configuration
-    if ! update_environment_file "$REALM_FILE" '$CLIENT_SECRET'; then
+    if ! update_environment_file "$REALM_FILE" "\$CLIENT_SECRET"; then
         exit 1
     fi
 
