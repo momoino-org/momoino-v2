@@ -1,0 +1,25 @@
+name: HadoLint
+
+on:
+  pull_request:
+    paths:
+      - "**/Dockerfile"
+  push:
+    paths:
+      - "**/Dockerfile"
+    branches:
+      - "main"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number }}
+  cancel-in-progress: true
+
+jobs:
+  hadolint:
+    name: Check
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hadolint/hadolint-action@v3.1.0
+        with:
+          recursive: true
