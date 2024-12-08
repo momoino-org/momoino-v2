@@ -1,0 +1,33 @@
+upstreamConfig:
+  upstreams:
+    - id: ui
+      path: ^/(.*)$$
+      rewriteTarget: /$$1
+      uri: ${OAUTH2_PROXY_UPSTREAM_UI_URI}
+    - id: api
+      path: ^/api/(.*)$$
+      rewriteTarget: /api/$$1
+      uri: ${OAUTH2_PROXY_UPSTREAM_API_URI}
+
+server:
+  BindAddress: '0.0.0.0:4180'
+
+injectRequestHeaders:
+  - name: Authorization
+    values:
+    - claim: access_token
+      prefix: 'Bearer '
+
+providers:
+  - id: oidc
+    provider: keycloak-oidc
+    clientID: ${OAUTH2_PROXY_CLIENT_ID}
+    clientSecret: ${OAUTH2_PROXY_CLIENT_SECRET}
+    code_challenge_method: ${OAUTH2_PROXY_CODE_CHALLENGE_METHOD}
+    scope: ${OAUTH2_PROXY_SCOPE}
+    oidcConfig:
+      issuerURL: ${OAUTH2_PROXY_ISSUER_URL}
+      insecureSkipNonce: false
+      audienceClaims:
+        - aud
+      emailClaim: email

@@ -1,0 +1,46 @@
+name: Backend
+
+on:
+  pull_request:
+    paths:
+      - "backend/**"
+  push:
+    paths:
+      - "backend/**"
+    branches:
+      - "main"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: backend/global.json
+          cache: true
+          cache-dependency-path: "**/packages.lock.json"
+      - name: Restore dependencies
+        run: dotnet restore --locked-mode
+      - name: Restore dotnet tool
+        run: dotnet tool restore
+      - run: |
+          dotnet tool run jb inspectcode ./Momoino.sln -f="text" -o=CodeIssues.txt
+          cat CodeIssues.txt
+      - run: dotnet format analyzers Momoino.sln --verify-no-changes --severity info
+      - run: dotnet tool run dotnet-csharpier --check .
+      - run: dotnet format style Momoino.sln --verify-no-changes --severity info
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
+      - name: Build
+        run: dotnet build --no-restore

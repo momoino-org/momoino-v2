@@ -1,0 +1,120 @@
+name: momoino
+
+services:
+  database:
+    extends:
+      file: compose.common.yaml
+      service: database
+    ports:
+      - ${DB_PORT}:5432
+
+  pgadmin:
+    image: ${PGADMIN_IMAGE}
+    ports:
+      - ${PGADMIN_PORT}:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    configs:
+      - source: servers.json
+        target: /pgadmin4/servers.json
+      - source: keycloak-user.pwd
+        target: /keycloak-user.pwd
+      - source: momoino-user.pwd
+        target: /momoino-user.pwd
+    networks:
+      - backend
+
+  auth:
+    extends:
+      file: compose.common.yaml
+      service: auth
+    ports:
+      - 8080:8080
+
+  redis-stack:
+    extends:
+      file: compose.common.yaml
+      service: redis-stack
+
+  oauth2-proxy:
+    extends:
+      file: compose.common.yaml
+      service: oauth2-proxy
+    env_file:
+      - ./.env.development
+
+  console:
+    image: console
+    build:
+      context: ./backend
+      dockerfile: Console/Dockerfile
+    environment:
+      ASPNETCORE_URLS: http://+:8000
+      OTEL_EXPORTER_OTLP_PROTOCOL: grpc
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+      Authentication__DefaultScheme: Bearer
+      Authentication__Schemes__Bearer__ValidAudience: account
+      Authentication__Schemes__Bearer__ValidIssuer: http://keycloak.localtest.me:8080/realms/momoino
+      Authentication__Schemes__Bearer__MetadataAddress: http://keycloak.localtest.me:8080/realms/momoino/.well-known/openid-configuration
+      Authentication__Schemes__Bearer__RequireHttpsMetadata: false
+    depends_on:
+      - jaeger
+      - auth
+    networks:
+      - backend
+
+  jaeger:
+    extends:
+      file: compose.common.yaml
+      service: jaeger
+    ports:
+      - ${JAEGER_PORT}:16686
+      - ${JAEGER_GRPC_PORT}:4317
+
+  # ui:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3000:3000"
+  #   networks:
+  #     - backend
+
+networks:
+  backend:
+
+volumes:
+  pgdata:
+
+configs:
+  keycloak-user.pwd:
+    content: "${KEYCLOAK_DB_PASSWORD}"
+  momoino-user.pwd:
+    content: "${MOMOINO_DB_PASSWORD}"
+  servers.json:
+    content: |
+      {
+        "Servers": {
+          "1": {
+            "Group": "Servers",
+            "Name": "${MOMOINO_DB_NAME}",
+            "Host": "database",
+            "Port": 5432,
+            "MaintenanceDB": "${MOMOINO_DB_NAME}",
+            "Username": "${MOMOINO_DB_USERNAME}",
+            "PassFile": "/momoino-user.pwd",
+            "SSLMode": "prefer"
+          },
+          "2": {
+            "Group": "Servers",
+            "Name": "${KEYCLOAK_DB_NAME}",
+            "Host": "database",
+            "Port": 5432,
+            "MaintenanceDB": "${KEYCLOAK_DB_NAME}",
+            "Username": "${KEYCLOAK_DB_USERNAME}",
+            "PassFile": "/keycloak-user.pwd",
+            "SSLMode": "prefer"
+          }
+        }
+      }
