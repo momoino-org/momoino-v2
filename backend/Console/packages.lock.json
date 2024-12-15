@@ -20,6 +20,12 @@
           "Microsoft.OpenApi": "1.6.17"
         }
       },
+      "Microsoft.Extensions.ApiDescription.Server": {
+        "type": "Direct",
+        "requested": "[9.0.0, )",
+        "resolved": "9.0.0",
+        "contentHash": "1Kzzf7pRey40VaUkHN9/uWxrKVkLu2AQjt+GVeeKLLpiEHAJ1xZRsLSh4ZZYEnyS7Kt2OBOPmsXNdU+wbcOl5w=="
+      },
       "OpenTelemetry.Exporter.Jaeger": {
         "type": "Direct",
         "requested": "[1.5.1, )",
