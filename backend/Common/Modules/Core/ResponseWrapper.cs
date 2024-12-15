@@ -15,7 +15,8 @@ public static class ResponseWrapper
     private static void PopulateResponseFields(
         SimpleApiResponse response,
         HttpContext? httpContext,
-        ResponseOptions options)
+        ResponseOptions options
+    )
     {
         // Set optional fields if provided
         if (options.Type is not null)
@@ -54,7 +55,8 @@ public static class ResponseWrapper
         int statusCode = StatusCodes.Status200OK,
         string? type = null,
         string? title = null,
-        string? detail = null)
+        string? detail = null
+    )
     {
         var response = new SimpleApiResponse();
         var options = new ResponseOptions(statusCode, type, title, detail);
@@ -73,7 +75,8 @@ public static class ResponseWrapper
         int statusCode = StatusCodes.Status200OK,
         string? type = null,
         string? title = null,
-        string? detail = null)
+        string? detail = null
+    )
         where TData : notnull
     {
         var response = new ApiResponse<TData> { Data = data };
@@ -87,9 +90,7 @@ public static class ResponseWrapper
     /// <summary>
     /// Creates an API response containing data with required HTTP context
     /// </summary>
-    public static ApiResponse<TData> Normal<TData>(
-        HttpContext httpContext,
-        TData data)
+    public static ApiResponse<TData> Normal<TData>(HttpContext httpContext, TData data)
         where TData : notnull
     {
         var response = new ApiResponse<TData> { Data = data };
@@ -107,7 +108,8 @@ public static class ResponseWrapper
         int statusCode,
         string? type = null,
         string? title = null,
-        string? detail = null)
+        string? detail = null
+    )
     {
         public int StatusCode { get; } = statusCode;
         public string? Type { get; } = type;

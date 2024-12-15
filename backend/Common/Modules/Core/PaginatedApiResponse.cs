@@ -1,17 +1,18 @@
+using System.Collections;
 using System.Text.Json.Serialization;
 
 namespace Common.Modules.Core;
 
 /// <summary>
-/// Represents a paginated API response that includes data and pagination information.
+/// Represents a paginated API response that extends ApiResponse with pagination metadata.
 /// </summary>
-/// <typeparam name="TData">The type of the data included in the response.</typeparam>
-public class PaginatedApiResponse<TData> : ApiResponse<TData>
-    where TData : notnull
+/// <typeparam name="TData">The type of the enumerable data included in the response.</typeparam>
+public class PagedApiResponse<TData> : ApiResponse<TData>
+    where TData : notnull, IEnumerable
 {
     /// <summary>
-    /// Gets or sets the pagination information for the response.
+    /// Gets or sets the pagination metadata containing page information and counts.
     /// </summary>
     [JsonPropertyOrder(60)]
-    public required object Pagination { get; set; }
+    public required PaginationMetadata Pagination { get; set; }
 }
