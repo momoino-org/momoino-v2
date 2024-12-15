@@ -1,5 +1,5 @@
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
-using System.Net;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -17,7 +17,7 @@ public static class ResponseWrapper
     private static void Fill(
         SimpleApiResponse simpleApiResponse,
         HttpContext? httpContext = null,
-        HttpStatusCode statusCode = HttpStatusCode.OK,
+        int statusCode = StatusCodes.Status200OK,
         string? type = null,
         string? title = null,
         string? detail = null
@@ -55,7 +55,7 @@ public static class ResponseWrapper
     /// </summary>
     public static SimpleApiResponse Simple(
         HttpContext? httpContext = null,
-        HttpStatusCode statusCode = HttpStatusCode.OK,
+        int statusCode = StatusCodes.Status200OK,
         string? type = null,
         string? title = null,
         string? detail = null
@@ -74,11 +74,12 @@ public static class ResponseWrapper
     public static ApiResponse<TData> Normal<TData>(
         TData data,
         HttpContext? httpContext = null,
-        HttpStatusCode statusCode = HttpStatusCode.OK,
+        int statusCode = StatusCodes.Status200OK,
         string? type = null,
         string? title = null,
         string? detail = null
     )
+        where TData : notnull
     {
         ApiResponse<TData> apiResponse = new() { Data = data };
 
@@ -91,6 +92,7 @@ public static class ResponseWrapper
     /// Creates a normal API response with data using a required HTTP context.
     /// </summary>
     public static ApiResponse<TData> Normal<TData>(HttpContext httpContext, TData data)
+        where TData : notnull
     {
         ApiResponse<TData> apiResponse = new() { Data = data };
 
@@ -121,7 +123,7 @@ public class SimpleApiResponse
     /// Gets or sets the HTTP status code of the response.
     /// </summary>
     [JsonPropertyOrder(-3)]
-    public HttpStatusCode Status { get; set; } = HttpStatusCode.OK;
+    public int Status { get; set; } = StatusCodes.Status200OK;
 
     /// <summary>
     /// Gets or sets the detailed description of the response.
@@ -154,6 +156,7 @@ public class SimpleApiResponse
 /// </summary>
 /// <typeparam name="TData">The type of the data included in the response.</typeparam>
 public class ApiResponse<TData> : SimpleApiResponse
+    where TData : notnull
 {
     /// <summary>
     /// Gets or sets the data included in the response.
@@ -167,6 +170,7 @@ public class ApiResponse<TData> : SimpleApiResponse
 /// </summary>
 /// <typeparam name="TData">The type of the data included in the response.</typeparam>
 public class PaginatedApiResponse<TData> : ApiResponse<TData>
+    where TData : notnull
 {
     /// <summary>
     /// Gets or sets the pagination information for the response.

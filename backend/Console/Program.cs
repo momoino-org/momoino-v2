@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.OpenApi;
-using Microsoft.OpenApi.Models;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Scalar.AspNetCore;
@@ -31,53 +30,7 @@ builder.Services.AddRouting(options =>
 
 builder.Services.AddControllers();
 
-builder.Services.AddOpenApi(opt =>
-{
-    opt.OpenApiVersion = OpenApiSpecVersion.OpenApi3_0;
-    _ = opt.AddDocumentTransformer(
-        (document, _, _) =>
-        {
-            IConfigurationSection authConfig = builder.Configuration.GetRequiredSection(
-                "OpenAPI:OAuth2"
-            );
-            var authorizationUrl =
-                authConfig.GetValue<string>("AuthorizationUrl")
-                ?? throw new InvalidOperationException(
-                    "AuthorizationUrl not found in the configuration."
-                );
-            var tokenUrl =
-                authConfig.GetValue<string>("TokenUrl")
-                ?? throw new InvalidOperationException("TokenUrl not found in the configuration.");
-
-            // Add OAuth2 security scheme to the OpenAPI document.
-            var scheme = new OpenApiSecurityScheme
-            {
-                Type = SecuritySchemeType.OAuth2,
-                Flows = new OpenApiOAuthFlows
-                {
-                    AuthorizationCode = new OpenApiOAuthFlow
-                    {
-                        AuthorizationUrl = new Uri(authorizationUrl),
-                        TokenUrl = new Uri(tokenUrl),
-                    },
-                },
-                Reference = new OpenApiReference
-                {
-                    Id = "oauth2",
-                    Type = ReferenceType.SecurityScheme,
-                },
-            };
-
-            document.Components ??= new OpenApiComponents();
-            document.Components.SecuritySchemes ??= new Dictionary<string, OpenApiSecurityScheme>();
-            document.Components.SecuritySchemes[scheme.Reference.Id] = scheme;
-            document.SecurityRequirements ??= [];
-            document.SecurityRequirements.Add(new OpenApiSecurityRequirement { [scheme] = [] });
-
-            return Task.CompletedTask;
-        }
-    );
-});
+builder.Services.AddOpenApi(opt => opt.OpenApiVersion = OpenApiSpecVersion.OpenApi3_0);
 
 builder.Services.AddDbContext<ApplicationDbContext>();
 builder
@@ -104,12 +57,12 @@ builder
                     ctx.HttpContext.RequestServices.GetRequiredService<ProblemDetailsFactory>();
                 ProblemDetails problemDetails = problemDetailsFactory.CreateProblemDetails(
                     ctx.HttpContext,
-                    (int)HttpStatusCode.Unauthorized,
+                    StatusCodes.Status401Unauthorized,
                     "Authentication failed",
                     detail: "Missing bearer token"
                 );
 
-                ctx.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
 
                 return ctx.Response.WriteAsJsonAsync(
                     problemDetails,
@@ -123,7 +76,7 @@ builder
                     ctx.HttpContext.RequestServices.GetRequiredService<ProblemDetailsFactory>();
                 ProblemDetails problemDetails = problemDetailsFactory.CreateProblemDetails(
                     ctx.HttpContext,
-                    (int)HttpStatusCode.Unauthorized,
+                    StatusCodes.Status401Unauthorized,
                     "Authentication failed",
                     detail: ctx.Exception.Message
                 );
@@ -152,8 +105,12 @@ WebApplication app = builder.Build();
 
 app.UseExceptionHandler();
 
-app.MapOpenApi();
-app.MapScalarApiReference();
+app.MapOpenApi("/api/openapi/{documentName}.json");
+app.MapScalarApiReference(x =>
+{
+    x.EndpointPathPrefix = "/api/doc/{documentName}";
+    x.OpenApiRoutePattern = "/api/openapi/{documentName}.json";
+});
 
 app.UseRouting();
 app.UseCors();
