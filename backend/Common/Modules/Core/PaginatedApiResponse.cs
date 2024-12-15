@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Text.Json.Serialization;
 
 namespace Common.Modules.Core;
@@ -8,7 +7,7 @@ namespace Common.Modules.Core;
 /// </summary>
 /// <typeparam name="TData">The type of the enumerable data included in the response.</typeparam>
 public class PagedApiResponse<TData> : ApiResponse<TData>
-    where TData : notnull, IEnumerable
+    where TData : notnull, IReadOnlyCollection<object>
 {
     /// <summary>
     /// Gets or sets the pagination metadata containing page information and counts.
