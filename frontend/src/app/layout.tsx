@@ -1,23 +1,23 @@
-import { getUserProfile } from '@/modules/auth/server/profile';
+import { PropsWithChildren } from 'react';
+import { QueryProvider } from '@/modules/core/httpclient/client';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
-import { headers } from 'next/headers';
+import { getLocale, getMessages } from 'next-intl/server';
+import { NextIntlClientProvider } from 'next-intl';
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  for (const [key, value] of (await headers()).entries()) {
-    console.log({ key, value });
-  }
-
-  const userProfile = await getUserProfile();
-  console.log({ userProfile });
+export default async function RootLayout({ children }: PropsWithChildren) {
+  const locale = await getLocale();
+  const messages = await getMessages();
 
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body>
-        <AppRouterCacheProvider>{children}</AppRouterCacheProvider>
+        <AppRouterCacheProvider>
+          <QueryProvider>
+            <NextIntlClientProvider messages={messages}>
+              {children}
+            </NextIntlClientProvider>
+          </QueryProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

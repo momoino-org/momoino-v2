@@ -1,3 +1,9 @@
+'use client';
+
+import { useUserProfile } from '@/modules/auth/client/hooks';
+
 export default function Home() {
-  return <div>Hello World (/admin)</div>;
+  const { data: userProfile } = useUserProfile();
+
+  return JSON.stringify(userProfile);
 }
