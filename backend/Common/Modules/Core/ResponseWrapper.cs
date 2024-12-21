@@ -13,7 +13,7 @@ public static class ResponseWrapper
     /// Populates common response fields for any API response type
     /// </summary>
     private static void PopulateResponseFields(
-        SimpleApiResponse response,
+        ApiResponseBase response,
         HttpContext? httpContext,
         ResponseOptions options
     )
@@ -50,7 +50,7 @@ public static class ResponseWrapper
     /// <summary>
     /// Creates a simple API response without data
     /// </summary>
-    public static SimpleApiResponse Simple(
+    public static ApiResponseBase Simple(
         HttpContext? httpContext = null,
         int statusCode = StatusCodes.Status200OK,
         string? type = null,
@@ -58,7 +58,7 @@ public static class ResponseWrapper
         string? detail = null
     )
     {
-        var response = new SimpleApiResponse();
+        var response = new ApiResponseBase();
         var options = new ResponseOptions(statusCode, type, title, detail);
 
         PopulateResponseFields(response, httpContext, options);
@@ -69,7 +69,7 @@ public static class ResponseWrapper
     /// <summary>
     /// Creates an API response containing data with optional parameters
     /// </summary>
-    public static ApiResponse<TData> Normal<TData>(
+    public static ApiResponseWithData<TData> Normal<TData>(
         TData data,
         HttpContext? httpContext = null,
         int statusCode = StatusCodes.Status200OK,
@@ -79,7 +79,7 @@ public static class ResponseWrapper
     )
         where TData : notnull
     {
-        var response = new ApiResponse<TData> { Data = data };
+        var response = new ApiResponseWithData<TData> { Data = data };
         var options = new ResponseOptions(statusCode, type, title, detail);
 
         PopulateResponseFields(response, httpContext, options);
@@ -90,10 +90,10 @@ public static class ResponseWrapper
     /// <summary>
     /// Creates an API response containing data with required HTTP context
     /// </summary>
-    public static ApiResponse<TData> Normal<TData>(HttpContext httpContext, TData data)
+    public static ApiResponseWithData<TData> Normal<TData>(HttpContext httpContext, TData data)
         where TData : notnull
     {
-        var response = new ApiResponse<TData> { Data = data };
+        var response = new ApiResponseWithData<TData> { Data = data };
         var options = new ResponseOptions(StatusCodes.Status200OK);
 
         PopulateResponseFields(response, httpContext, options);

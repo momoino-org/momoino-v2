@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.OpenApi;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Scalar.AspNetCore;
@@ -29,8 +28,6 @@ builder.Services.AddRouting(options =>
 });
 
 builder.Services.AddControllers();
-
-builder.Services.AddOpenApi(opt => opt.OpenApiVersion = OpenApiSpecVersion.OpenApi3_0);
 
 builder.Services.AddDbContext<ApplicationDbContext>();
 builder
@@ -105,11 +102,12 @@ WebApplication app = builder.Build();
 
 app.UseExceptionHandler();
 
-app.MapOpenApi("/api/openapi/{documentName}.json");
+app.MapStaticAssets();
+
 app.MapScalarApiReference(x =>
 {
     x.EndpointPathPrefix = "/api/doc/{documentName}";
-    x.OpenApiRoutePattern = "/api/openapi/{documentName}.json";
+    x.OpenApiRoutePattern = "/api/openapi/{documentName}.yaml";
 });
 
 app.UseRouting();

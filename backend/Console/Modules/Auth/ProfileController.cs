@@ -21,7 +21,7 @@ public class ProfileController(UserService userService) : ControllerBase
     /// An Ok result containing an ApiResponse with the PrincipalUser object.
     /// </returns>
     [HttpGet]
-    [ProducesResponseType<ApiResponse<PrincipalUser>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ApiResponseWithData<PrincipalUser>>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     public async Task<IResult> GetProfileAsync()
     {
