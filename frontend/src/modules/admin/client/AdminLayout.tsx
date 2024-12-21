@@ -2,7 +2,7 @@
 
 import { useUserProfile } from '@/modules/auth/client/hooks';
 import { SideMenu } from '@/modules/core/ui/components/SideMenu';
-import { Stack, Box, Avatar, Typography } from '@mui/material';
+import { Stack, Box, Avatar, Typography, Button, Tooltip } from '@mui/material';
 import { IconSmartHome, IconUser } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { PropsWithChildren } from 'react';
@@ -15,16 +15,35 @@ export function AdminLayout(props: PropsWithChildren) {
     <Stack flexDirection="row">
       <SideMenu
         header={
-          <Stack flexDirection="row" gap={1.5} mb={2} alignItems="center">
-            <Avatar />
-            <Box minWidth={0}>
-              <Typography noWrap fontWeight={700}>
-                {userProfileRequest.data?.data.firstName}{' '}
-                {userProfileRequest.data?.data.lastName}
-              </Typography>
-              <Typography>Manage account</Typography>
-            </Box>
-          </Stack>
+          <Tooltip
+            title="Manage your account"
+            arrow
+            describeChild
+            placement="right"
+          >
+            <Button
+              color="inherit"
+              fullWidth
+              sx={{
+                gap: 1.5,
+                textAlign: 'start',
+                alignItems: 'center',
+                textTransform: 'none',
+                marginBottom: 2,
+              }}
+            >
+              <Avatar />
+              <Stack flexGrow={1} minWidth={0}>
+                <Typography noWrap fontWeight={500}>
+                  {userProfileRequest.data?.data.firstName}{' '}
+                  {userProfileRequest.data?.data.lastName}
+                </Typography>
+                <Typography noWrap variant="subtitle2" fontWeight={400}>
+                  {userProfileRequest.data?.data.email}
+                </Typography>
+              </Stack>
+            </Button>
+          </Tooltip>
         }
         items={[
           { icon: IconSmartHome, label: t('home'), path: '/admin' },

@@ -8,6 +8,9 @@ export function useUserProfile() {
   return useQuery({
     queryKey: ['userProfile'],
     refetchInterval: THIRTY_SECONDS,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+    refetchOnWindowFocus: true,
     queryFn: async ({ signal }) => {
       const request = await makeUserProfileRequest({ signal });
       return request.json();

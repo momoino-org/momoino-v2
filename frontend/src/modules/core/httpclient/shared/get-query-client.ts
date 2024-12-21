@@ -3,6 +3,7 @@ import {
   defaultShouldDehydrateQuery,
   isServer,
 } from '@tanstack/react-query';
+import { THIRTY_SECONDS } from '@/modules/core/config';
 
 /**
  * Singleton QueryClient instance for browser environment
@@ -18,7 +19,8 @@ function makeQueryClient(): QueryClient {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 60 * 1000,
+        staleTime: THIRTY_SECONDS,
+        throwOnError: true,
       },
       dehydrate: {
         // include pending queries in dehydration
