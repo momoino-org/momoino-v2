@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 vars:
   MINIMAL_DEPS:
@@ -17,10 +17,3 @@ tasks:
     deps: [setup-env-file]
     cmds:
       - docker compose -f compose.development.yaml --env-file .env.development up -d {{ join " " .MINIMAL_DEPS }}
-
-  start-ui-dev:
-    dir: frontend
-    env:
-      NEXT_PUBLIC_ORIGIN_URL: http://localhost:4180/
-    cmds:
-      - npm run dev -- --hostname 0.0.0.0

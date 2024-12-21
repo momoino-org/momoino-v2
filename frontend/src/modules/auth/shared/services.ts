@@ -17,6 +17,7 @@ export function makeUserProfileRequest(options?: Omit<Options, 'parseJson'>) {
     ...options,
     parseJson(text) {
       const json = JSON.parse(text);
+
       return parseAsync(
         createApiResponseWithDataSchema(UserProfileSchema),
         json,

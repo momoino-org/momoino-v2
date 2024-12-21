@@ -2,13 +2,15 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { makeUserProfileRequest } from '../shared';
+import { THIRTY_SECONDS } from '@/modules/core/config';
 
-export const useUserProfile = () =>
-  useQuery({
+export function useUserProfile() {
+  return useQuery({
     queryKey: ['userProfile'],
-    refetchInterval: 30_000, // 30 seconds
+    refetchInterval: THIRTY_SECONDS,
     queryFn: async ({ signal }) => {
       const request = await makeUserProfileRequest({ signal });
       return request.json();
     },
   });
+}

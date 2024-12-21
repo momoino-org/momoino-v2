@@ -1,4 +1,4 @@
-import { ORIGIN_URL } from '@/modules/core/config/env';
+import { ORIGIN_URL } from '@/modules/core/config';
 import ky from 'ky';
 
 /**

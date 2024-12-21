@@ -1,1 +1,7 @@
-{}
+{
+  "$schema": "../translation.schema.json",
+  "management": {
+    "home": "Home",
+    "system": "System"
+  }
+}
