@@ -1,0 +1,19 @@
+version: "3"
+
+vars:
+  MINIMAL_DEPS:
+    - database
+    - pgadmin
+    - auth
+    - redis-stack
+    - oauth2-proxy
+    - jaeger
+
+tasks:
+  setup-env-file:
+    cmd: bash setup-env-file.sh
+
+  start-minimal-deps:
+    deps: [setup-env-file]
+    cmds:
+      - docker compose -f compose.development.yaml --env-file .env.development up -d {{ join " " .MINIMAL_DEPS }}

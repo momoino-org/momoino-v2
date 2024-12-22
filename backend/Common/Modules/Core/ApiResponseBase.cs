@@ -6,7 +6,7 @@ namespace Common.Modules.Core;
 /// <summary>
 /// Represents a simple API response with basic information.
 /// </summary>
-public class SimpleApiResponse
+public class ApiResponseBase
 {
     /// <summary>
     /// Gets or sets the type of the response.

@@ -6,7 +6,7 @@ namespace Common.Modules.Core;
 /// Represents a detailed API response that includes data.
 /// </summary>
 /// <typeparam name="TData">The type of the data included in the response.</typeparam>
-public class ApiResponse<TData> : SimpleApiResponse
+public class ApiResponseWithData<TData> : ApiResponseBase
     where TData : notnull
 {
     /// <summary>
