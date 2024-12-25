@@ -28,7 +28,7 @@
     <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.10.0" />
     <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.10.1" />
     <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.10.0" />
-    <PackageReference Include="Scalar.AspNetCore" Version="1.2.71" />
+    <PackageReference Include="Scalar.AspNetCore" Version="1.2.72" />
     <PackageReference Include="SonarAnalyzer.CSharp" Version="10.4.0.108396">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
