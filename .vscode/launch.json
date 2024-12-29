@@ -10,7 +10,7 @@
       "request": "launch",
       "cwd": "${workspaceFolder}/frontend",
       "program": "${workspaceFolder}/frontend/node_modules/.bin/next",
-      "runtimeArgs": ["--inspect"],
+      // "runtimeArgs": ["--inspect"],
       "skipFiles": ["<node_internals>/**"],
       "serverReadyAction": {
         "action": "debugWithEdge",

@@ -1,9 +1,8 @@
-'use client';
+import { Button } from "@/modules/core/ui/components/Button";
+import { ReactNode } from "react";
 
-import { useUserProfile } from '@/modules/auth/client/hooks';
-
-export default function SystemPage() {
-  const { data: userProfile } = useUserProfile();
-
-  return JSON.stringify(userProfile);
+export default function SystemPage(): ReactNode {
+  return (
+    <Button >Hello</Button>
+  );
 }

@@ -68,6 +68,7 @@ const eslintCofig = [
           ignoreRestSiblings: false,
         },
       ],
+      "@typescript-eslint/explicit-function-return-type": "error"
     },
   },
   eslintConfigPrettier,

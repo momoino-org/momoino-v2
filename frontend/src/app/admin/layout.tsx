@@ -1,11 +1,10 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, ReactNode } from 'react';
 import { getUserProfile } from '@/modules/auth/server';
 import { unauthorized } from 'next/navigation';
 import { getQueryClient } from '@/modules/core/httpclient/shared';
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
-import { AdminLayout } from '@/modules/admin/client/AdminLayout';
 
-export default async function Layout({ children }: PropsWithChildren) {
+export default async function Layout({ children }: PropsWithChildren): Promise<ReactNode> {
   const queryClient = getQueryClient();
 
   const userProfile = await getUserProfile();
@@ -18,7 +17,7 @@ export default async function Layout({ children }: PropsWithChildren) {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <AdminLayout>{children}</AdminLayout>
+      {children}
     </HydrationBoundary>
   );
 }
