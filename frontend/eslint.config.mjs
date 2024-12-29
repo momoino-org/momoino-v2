@@ -13,6 +13,10 @@ const eslintCofig = [
   }),
   ...eslintConfigReactQuery.configs['flat/recommended'],
   {
+    ignores: [
+      'src/modules/core/ui/generated/**',
+      '!src/modules/core/ui/generated/index.ts'
+    ],
     rules: {
       'arrow-body-style': ['error', 'as-needed'],
       'func-style': ['error', 'declaration', { allowArrowFunctions: true }],
