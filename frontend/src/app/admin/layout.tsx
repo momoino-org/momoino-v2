@@ -1,10 +1,10 @@
 import { PropsWithChildren, ReactNode } from 'react';
-import { getUserProfile } from '@/modules/auth/server';
 import { unauthorized } from 'next/navigation';
 import { getQueryClient } from '@/modules/core/httpclient/shared';
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger } from '@/modules/core/ui/generated';
 import { Calendar, Home, Inbox, Search, Settings } from 'lucide-react';
+import { auth } from '@/auth';
 
 const items = [
   {
@@ -37,7 +37,7 @@ const items = [
 export default async function Layout({ children }: PropsWithChildren): Promise<ReactNode> {
   const queryClient = getQueryClient();
 
-  const userProfile = await getUserProfile();
+  const userProfile = await auth();
 
   if (!userProfile) {
     return unauthorized();

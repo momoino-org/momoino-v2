@@ -1,9 +1,8 @@
-'use client';
+import { auth } from '@/auth';
+import { ReactNode } from 'react';
 
-import { useUserProfile } from '@/modules/auth/client/hooks';
-
-export default function Home() {
-  const { data: userProfile } = useUserProfile();
+export default async function Home(): Promise<ReactNode> {
+  const userProfile = await auth();
 
   return JSON.stringify(userProfile);
 }

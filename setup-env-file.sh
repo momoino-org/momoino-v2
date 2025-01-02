@@ -2,6 +2,7 @@
 
 # Configuration files
 readonly ENV_FILE=".env.development"
+readonly UI_ENV_FILE="frontend/.env.local"
 readonly REALM_FILE=".docker/keycloak/momoino-realm.json"
 
 # Generates a secure random key in base64 format
@@ -25,7 +26,7 @@ function update_environment_file() {
     local backup_file="${file}.bak"
 
     echo "Updating environment variables in: $file"
-    
+
     # Create backup
     if ! cp "$file" "$backup_file"; then
         echo "Error: Failed to create backup of $file" >&2
@@ -70,7 +71,7 @@ function generate_security_keys() {
     local -n cookie_secret=$3
 
     echo "Generating security keys..."
-    
+
     client_secret=$(generate_secure_key) || return 1
     default_password=$(generate_secure_key) || return 1
     cookie_secret=$(generate_secure_key) || return 1
@@ -108,8 +109,19 @@ function main() {
         exit 1
     fi
 
+    # Update environment configuration
+    if ! update_environment_file "$UI_ENV_FILE" "\$CLIENT_SECRET"; then
+        exit 1
+    fi
+
+    # Set restrictive file permissions
+    if ! chmod 600 "$UI_ENV_FILE"; then
+        echo "Error: Failed to set secure file permissions" >&2
+        exit 1
+    fi
+
     # Clean up backup files
-    rm -f "$ENV_FILE.bak" "$REALM_FILE.bak"
+    rm -f "$ENV_FILE.bak" "$REALM_FILE.bak" "$UI_ENV_FILE.bak"
 
     echo "=== Environment Setup Complete ==="
 }
