@@ -1,0 +1,111 @@
+openapi: 3.1.0
+info:
+  title: Momoino
+  version: 1.0.0
+
+responses:
+  '400':
+    description: Bad Request
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/BadRequest'
+
+paths:
+  /api/v1/auth/profile:
+    get:
+      tags: [Profile]
+      description: Retrieve user profile information
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponseWithData'
+                  - type: object
+                    properties:
+                      status:
+                        example: 200
+                      data:
+                        $ref: '#/components/schemas/UserProfile'
+
+components:
+  schemas:
+    # Schema for a generic API response with data
+    ApiResponseWithData:
+      type: object
+      required: [type, title, status, instance, traceId, timestamp]
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri
+        traceId:
+          type: string
+          example: 00-a7555df10f5803b6e669e08abb3fff3e-be802376dad00acd-01
+        timestamp:
+          type: string
+          format: date-time
+
+    # Schema for a Bad Request response
+    BadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        status:
+          type: integer
+          example: 400
+        detail:
+          type: string
+          nullable: true
+        instance:
+          type: string
+          nullable: true
+
+    # Schema for user profile data
+    UserProfile:
+      type: object
+      required: [id, username, email, emailVerified, firstName, lastName, locale, accessToken]
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+          example: phong.chu
+        email:
+          type: string
+          format: email
+          example: phong.chu@example.com
+        emailVerified:
+          type: boolean
+        firstName:
+          type: string
+          example: Phong
+        lastName:
+          type: string
+          example: Chu
+        displayName:
+          type: string
+          example: Phong Chu
+        locale:
+          type: string
+          enum: [en]
+        accessToken:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IlBob25nIENodSIsImlhdCI6MTUxNjIzOTAyMn0.Fi4Yyq3tTaWehsBbSaaGYnsilNA3h-CPF0rFtTMOWow
+

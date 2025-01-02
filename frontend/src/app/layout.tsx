@@ -1,23 +1,33 @@
-import { getUserProfile } from '@/modules/auth/server/profile';
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
-import { headers } from 'next/headers';
+import { PropsWithChildren, ReactNode } from 'react';
+import { QueryProvider } from '@/modules/core/httpclient/client';
+import { getLocale, getMessages } from 'next-intl/server';
+import { NextIntlClientProvider } from 'next-intl';
+import { Roboto } from 'next/font/google';
+import '@/global.css';
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  for (const [key, value] of (await headers()).entries()) {
-    console.log({ key, value });
-  }
+const robotoFont = Roboto({
+  weight: ['300', '400', '500', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-family',
+});
 
-  const userProfile = await getUserProfile();
-  console.log({ userProfile });
+export default async function RootLayout({ children }: PropsWithChildren): Promise<ReactNode> {
+  const locale = await getLocale();
+  const messages = await getMessages();
 
   return (
-    <html lang="en">
+    <html
+      lang={locale}
+      className={robotoFont.variable}
+      suppressHydrationWarning
+    >
       <body>
-        <AppRouterCacheProvider>{children}</AppRouterCacheProvider>
+        <QueryProvider>
+          <NextIntlClientProvider messages={messages}>
+            {children}
+          </NextIntlClientProvider>
+        </QueryProvider>
       </body>
     </html>
   );

@@ -6,7 +6,7 @@ namespace Common.Modules.Core;
 /// Represents a paginated API response that extends ApiResponse with pagination metadata.
 /// </summary>
 /// <typeparam name="TData">The type of the enumerable data included in the response.</typeparam>
-public class PagedApiResponse<TData> : ApiResponse<TData>
+public class ApiResponseWithPagination<TData> : ApiResponseWithData<TData>
     where TData : notnull, IReadOnlyCollection<object>
 {
     /// <summary>

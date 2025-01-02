@@ -1,3 +1,8 @@
-export default function Home() {
-  return <div>Hello World (/admin)</div>;
+import { auth } from '@/auth';
+import { ReactNode } from 'react';
+
+export default async function Home(): Promise<ReactNode> {
+  const userProfile = await auth();
+
+  return JSON.stringify(userProfile);
 }

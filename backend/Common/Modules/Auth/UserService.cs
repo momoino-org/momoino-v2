@@ -1,15 +1,18 @@
+using System.Globalization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace Common.Modules.Auth;
 
 /// <summary>
 /// Provides services related to user information, including retrieving the principal user from the HTTP context.
 /// </summary>
-public class UserService(IHttpContextAccessor contextAccessor)
+public class UserService(IHttpContextAccessor contextAccessor, IConfiguration configuration)
 {
     private readonly HttpContext? _httpContext = contextAccessor.HttpContext;
+    private readonly IConfiguration _configuration = configuration;
 
     /// <summary>
     /// Retrieves the principal user from the current HTTP context.
@@ -32,6 +35,9 @@ public class UserService(IHttpContextAccessor contextAccessor)
         var firstName = claims.FindFirstValue(ClaimTypes.GivenName);
         var lastName = claims.FindFirstValue(ClaimTypes.Surname);
         var locale = claims.FindFirstValue("locale");
+        var preferredDisplayNameTemplate = this._configuration.GetValue<string>(
+            $"UserConfig:PreferredDisplayName:{locale}"
+        );
         var accessToken = await this._httpContext.GetTokenAsync("access_token");
 
         ArgumentNullException.ThrowIfNull(userId);
@@ -40,6 +46,7 @@ public class UserService(IHttpContextAccessor contextAccessor)
         ArgumentNullException.ThrowIfNull(firstName);
         ArgumentNullException.ThrowIfNull(lastName);
         ArgumentNullException.ThrowIfNull(locale);
+        ArgumentNullException.ThrowIfNull(preferredDisplayNameTemplate);
         ArgumentNullException.ThrowIfNull(accessToken);
 
         return new PrincipalUser
@@ -50,6 +57,13 @@ public class UserService(IHttpContextAccessor contextAccessor)
             EmailVerified = emailVerified,
             FirstName = firstName,
             LastName = lastName,
+            DisplayName = string.Format(
+                    CultureInfo.InvariantCulture,
+                    preferredDisplayNameTemplate,
+                    firstName,
+                    lastName
+                )
+                .Trim(),
             Locale = locale,
             AccessToken = accessToken,
         };

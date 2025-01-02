@@ -45,7 +45,7 @@ services:
       - ./.env.development
 
   console:
-    image: console
+    image: momoino/backend:beta
     build:
       context: ./backend
       dockerfile: Console/Dockerfile
@@ -58,6 +58,7 @@ services:
       Authentication__Schemes__Bearer__ValidIssuer: http://keycloak.localtest.me:8080/realms/momoino
       Authentication__Schemes__Bearer__MetadataAddress: http://keycloak.localtest.me:8080/realms/momoino/.well-known/openid-configuration
       Authentication__Schemes__Bearer__RequireHttpsMetadata: false
+      UserConfig__PreferredDisplayName__en: "{0} {1}"
     depends_on:
       - jaeger
       - auth
